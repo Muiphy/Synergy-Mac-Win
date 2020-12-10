@@ -1,5 +1,5 @@
 # Synergy-Mac-Win
-**Synergy是可以共享鼠标和键盘应用,包含了mac和win平台。
+**Synergy是可以共享鼠标和键盘应用,包含了mac和win平台。**
 
 mac 平台包含配置文件
 win 平台包含破解文件
