@@ -63,3 +63,9 @@ jobs:
         env:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          
+      - name: Run unit test
+        run: |
+          pwd
+        
+      # ./build/bin/unittests
