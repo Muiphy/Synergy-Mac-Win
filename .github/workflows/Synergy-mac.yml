@@ -31,7 +31,7 @@ jobs:
       - name: Clone source code
         run: |
           df -hT $PWD
-          git clone REPO_URL synergy-core
+          git clone $REPO_URL synergy-core
 
       - name: install qt
         run: brew install qt
