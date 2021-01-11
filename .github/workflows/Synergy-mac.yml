@@ -33,7 +33,7 @@ jobs:
           df -hT $PWD
           wget https://github.com/symless/synergy-core/archive/v1.13.0-stable.zip
           unzip v1.13.0-stable.zip
-          cd v1.13.0-stable
+          cd synergy-core-1.13.0-stable
           mkdir build
           cd build
 
