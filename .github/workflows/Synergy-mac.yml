@@ -47,8 +47,8 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt ..
           . ./version
           make -j
-          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
           echo "::set-output name=status::success"
+          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
           
       - name: Upload bin directory
         uses: actions/upload-artifact@main
