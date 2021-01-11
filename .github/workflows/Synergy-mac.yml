@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@main
         if: steps.compile.outputs.status == 'success'
         with:
-         name: Synergy-mac-bin-${{ env.FILE_DATE }}
+         name: Synergy-mac-bin${{ env.FILE_DATE }}
          path: synergy-core/build/bin
 
       - name: SSH connection to Actions
@@ -66,6 +66,4 @@ jobs:
           
       - name: Run unit test
         run: |
-          pwd
-        
-      # ./build/bin/unittests
+          ./synergy-core/build/bin/unittests
