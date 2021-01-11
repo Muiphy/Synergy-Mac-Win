@@ -76,12 +76,13 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Release ..
           . ./version
           msbuild synergy-core.sln /p:Configuration=Release
+          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
           
       - name: Upload bin directory
         uses: actions/upload-artifact@main
         if: steps.compile.outputs.cache-hit != 'true'
         with:
-         name: Synergy-mac-bin${{ env.FILE_DATE }}
+         name: Synergy-win-bin${{ env.FILE_DATE }}
          path: synergy-core\build\bin
 
       - name: Run unit test
