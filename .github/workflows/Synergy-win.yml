@@ -1,0 +1,87 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Synergy-win
+
+# Controls when the action will run. 
+on:
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build-arch64:
+    runs-on: windows-2019
+
+    env:
+      GIT_COMMIT: ${{ github.sha }}
+      QT_BASE_DIR: ${{ github.workspace }}\deps\Qt
+      BONJOUR_BASE_DIR: ${{ github.workspace }}\deps\bonjour
+      QT_VERSION: 5.12.6
+      QT_BASE_URL: http://qt.mirror.constant.com/
+      BONJOUR_SDK_HOME: ${{ github.workspace }}\deps\bonjour\BonjourSDK
+      CMAKE_PREFIX_PATH: ${{ github.workspace }}\deps\Qt\5.12.6\msvc2017_64\
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Clone source code
+        run: |
+          df -hT $PWD
+          git clone $REPO_URL synergy-core
+          
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.QT_BASE_DIR }}
+          key: ${{ runner.os }}-Qt_${{ env.QT_VERSION }}
+
+      - name: Install Qt
+        if: steps.cache-qt.outputs.cache-hit != 'true'
+        run: |
+          pip install aqtinstall
+          python -m aqt install --outputdir $env:QT_BASE_DIR --base $env:QT_BASE_URL $env:QT_VERSION windows desktop win64_msvc2017_64
+          cd $env:QT_BASE_DIR\$env:QT_VERSION\msvc2017_64
+          dir
+
+      - name: Cache Bonjour
+        id: cache-bonjour
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.BONJOUR_BASE_DIR }}
+          key: ${{ runner.os }}-Bonjour
+
+      - name: Install Bonjour SDK
+        if: steps.cache-bonjour.outputs.cache-hit != 'true'
+        run: |
+          New-Item -Force -ItemType Directory -Path ".\deps\bonjour"
+          $client = new-object System.Net.WebClient
+          $client.DownloadFile("https://binaries.symless.com/bonjour/BonjourSDK.zip",".\bonjoursdk.zip")
+          [System.IO.Compression.ZipFile]::ExtractToDirectory(".\bonjoursdk.zip", $env:BONJOUR_BASE_DIR)
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Build
+        id: compile
+        run: |
+          dir
+          cd synergy-core
+          mkdir build
+          cd build
+          dir
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          . ./version
+          msbuild synergy-core.sln /p:Configuration=Release
+          
+      - name: Upload bin directory
+        uses: actions/upload-artifact@main
+        if: steps.compile.outputs.cache-hit != 'true'
+        with:
+         name: Synergy-mac-bin${{ env.FILE_DATE }}
+         path: synergy-core\build\bin
+
+      - name: Run unit test
+        run: .\synergy-core\build\bin\Release\unittests.exe
+
