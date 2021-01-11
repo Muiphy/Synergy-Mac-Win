@@ -31,8 +31,7 @@ jobs:
       - name: Clone source code
         run: |
           df -hT $PWD
-          wget https://github.com/symless/synergy-core/archive/v1.13.0-stable.zip
-          unzip v1.13.0-stable.zip
+          git clone REPO_URL synergy-core
 
       - name: install qt
         run: brew install qt
@@ -40,7 +39,7 @@ jobs:
       - name: Build
         run: |
           pwd
-          cd synergy-core-1.13.0-stable
+          cd synergy-core
           mkdir build
           cd build
           pwd
