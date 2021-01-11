@@ -6,15 +6,13 @@ name: Synergy-win
 on:
   workflow_dispatch:
 
-env:
-  REPO_URL: https://github.com/symless/synergy-core.git
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-arch64:
     runs-on: windows-2019
 
     env:
+      REPO_URL: https://github.com/symless/synergy-core.git
       GIT_COMMIT: ${{ github.sha }}
       QT_BASE_DIR: ${{ github.workspace }}\deps\Qt
       BONJOUR_BASE_DIR: ${{ github.workspace }}\deps\bonjour
@@ -31,7 +29,8 @@ jobs:
       - name: Clone source code
         run: |
           df -hT $PWD
-          git clone $REPO_URL
+          mkdir synergy-core
+          git clone ${{ env.REPO_URL }} synergy-core
           
       - name: Cache Qt
         id: cache-qt
