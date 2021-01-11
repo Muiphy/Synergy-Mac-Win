@@ -1,0 +1,57 @@
+# This is a basic workflow to help you get started with Actions
+
+name:  Synergy-mac
+
+# Controls when the action will run. 
+on:
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+        
+env:
+  REPO_URL: https://github.com/symless/synergy-core/tree/v1.13.0-stable
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: macos-10.15
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Clone source code
+        run: |
+          df -hT $PWD
+          git clone $REPO_URL synergy-core
+          cd synergy-core
+          mkdir build
+          cd build
+
+      - name: install qt
+        run: brew install qt
+
+      - name: Build
+        run: |
+          pwd
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt ..
+          . ./version
+          make -j
+          
+      - name: SSH connection to Actions
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      
+      - name: Run unit test
+        run: ./build/bin/unittests
