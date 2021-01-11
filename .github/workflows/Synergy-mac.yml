@@ -31,8 +31,9 @@ jobs:
       - name: Clone source code
         run: |
           df -hT $PWD
-          git clone $REPO_URL synergy-core
-          cd synergy-core
+          wget https://github.com/symless/synergy-core/archive/v1.13.0-stable.zip
+          unzip v1.13.0-stable.zip
+          cd v1.13.0-stable
           mkdir build
           cd build
 
