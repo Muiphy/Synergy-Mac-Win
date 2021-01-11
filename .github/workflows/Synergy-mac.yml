@@ -33,15 +33,16 @@ jobs:
           df -hT $PWD
           wget https://github.com/symless/synergy-core/archive/v1.13.0-stable.zip
           unzip v1.13.0-stable.zip
-          cd synergy-core-1.13.0-stable
-          mkdir build
-          cd build
 
       - name: install qt
         run: brew install qt
 
       - name: Build
         run: |
+          pwd
+          cd synergy-core-1.13.0-stable
+          mkdir build
+          cd build
           pwd
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt ..
           . ./version
