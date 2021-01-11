@@ -6,6 +6,9 @@ name: Synergy-win
 on:
   workflow_dispatch:
 
+env:
+  REPO_URL: https://github.com/symless/synergy-core.git
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-arch64:
