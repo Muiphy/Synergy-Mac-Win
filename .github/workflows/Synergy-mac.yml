@@ -34,7 +34,7 @@ jobs:
           git clone $REPO_URL synergy-core
 
       - name: install qt
-        run: brew install qt
+        run: brew install qt openssl
 
       - name: Build
         id: compile
